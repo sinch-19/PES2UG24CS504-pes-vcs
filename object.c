@@ -128,10 +128,10 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     // Step 6: Create shard directory
     char hex[HASH_HEX_SIZE + 1];
     hash_to_hex(&id, hex);
+    mkdir(OBJECTS_DIR, 0755);  // ensure .pes/objects/ exists first
     char shard_dir[512];
     snprintf(shard_dir, sizeof(shard_dir), "%s/%.2s", OBJECTS_DIR, hex);
     mkdir(shard_dir, 0755);
-
     // Step 7: Write to temp file
     char final_path[512];
     object_path(&id, final_path, sizeof(final_path));
