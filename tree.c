@@ -222,3 +222,4 @@ int tree_from_index(ObjectID *id_out) {
 
     return write_tree_level(index.entries, index.count, 0, id_out);
 }
+//all tests passed
