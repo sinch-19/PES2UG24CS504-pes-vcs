@@ -113,6 +113,51 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     if (!full) return -1;
     memcpy(full, header, header_len);       // includes the \0
     memcpy(full + header_len, data, len);
+
+    // Step 4: Hash the full object
+    ObjectID id;
+    compute_hash(full, total, &id);
+
+    // Step 5: Deduplication
+    if (object_exists(&id)) {
+        *id_out = id;
+        free(full);
+        return 0;
+    }
+    // Step 6: Create shard directory
+    char hex[HASH_HEX_SIZE + 1];
+    hash_to_hex(&id, hex);
+    char shard_dir[512];
+    snprintf(shard_dir, sizeof(shard_dir), "%s/%.2s", OBJECTS_DIR, hex);
+    mkdir(shard_dir, 0755);
+
+    // Step 7: Write to temp file
+    char final_path[512];
+    object_path(&id, final_path, sizeof(final_path));
+    char tmp_path[520];
+    snprintf(tmp_path, sizeof(tmp_path), "%s.tmp", final_path);
+
+    int fd = open(tmp_path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    if (fd < 0) { free(full); return -1; }
+    if (write(fd, full, total) != (ssize_t)total) {
+        close(fd); free(full); return -1;
+    }
+    free(full);
+
+    // Step 8: fsync the file
+    fsync(fd);
+    close(fd);
+
+    // Step 9: Atomic rename
+    if (rename(tmp_path, final_path) != 0) return -1;
+
+    // Step 10: fsync the shard directory
+    int dir_fd = open(shard_dir, O_RDONLY);
+    if (dir_fd >= 0) { fsync(dir_fd); close(dir_fd); }
+
+    // Step 11: Return hash
+    *id_out = id;
+    return 0;
 }
 
 // Read an object from the store.
