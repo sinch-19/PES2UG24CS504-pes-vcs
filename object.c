@@ -124,6 +124,7 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         free(full);
         return 0;
     }
+
     // Step 6: Create shard directory
     char hex[HASH_HEX_SIZE + 1];
     hash_to_hex(&id, hex);
