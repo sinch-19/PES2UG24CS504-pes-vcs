@@ -224,4 +224,47 @@ int index_add(Index *index, const char *path) {
     // TODO: Implement file staging
     // (See Lab Appendix for logical steps)
     // Read file contents
+    // Read file contents
+    FILE *f = fopen(path, "rb");
+    if (!f) {
+        fprintf(stderr, "error: cannot open '%s'\n", path);
+        return -1;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long file_size = ftell(f);
+    rewind(f);
+
+    uint8_t *buf = malloc((size_t)file_size);
+    if (!buf) { fclose(f); return -1; }
+    size_t bytes_read = fread(buf, 1, (size_t)file_size, f);
+    (void)bytes_read;
+    fclose(f);
+
+    // Write blob to object store
+    ObjectID hash_id;
+    if (object_write(OBJ_BLOB, buf, (size_t)file_size, &hash_id) != 0) {
+        free(buf); return -1;
+    }
+    free(buf);
+
+    // Get file metadata
+    struct stat st;
+    if (lstat(path, &st) != 0) return -1;
+
+    // Update existing entry or add new one
+    IndexEntry *e = index_find(index, path);
+    if (!e) {
+        if (index->count >= MAX_INDEX_ENTRIES) return -1;
+        e = &index->entries[index->count++];
+    }
+
+    e->mode = get_file_mode(path);
+    e->hash = hash_id;
+    e->mtime_sec = (uint64_t)st.st_mtime;
+    e->size      = (uint32_t)st.st_size;
+    strncpy(e->path, path, sizeof(e->path) - 1);
+    e->path[sizeof(e->path) - 1] = '\0';
+
+    return index_save(index);
 }
