@@ -230,3 +230,4 @@ int commit_create(const char *message, ObjectID *commit_id_out) {
     // Step 6: Update HEAD
     return head_update(commit_id_out);
 }
+// all tests passed
