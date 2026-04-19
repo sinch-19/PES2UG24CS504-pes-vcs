@@ -137,6 +137,73 @@ int tree_serialize(const Tree *tree, void **data_out, size_t *len_out) {
 //
 // Returns 0 on success, -1 on error.
 
+static int write_tree_level(IndexEntry *entries, int count,
+                             int depth, ObjectID *id_out) {
+    Tree tree;
+    tree.count = 0;
+
+    int i = 0;
+    while (i < count) {
+        const char *path = entries[i].path;
+
+        // Navigate to the component at this depth
+        const char *component = path;
+        for (int d = 0; d < depth; d++) {
+            const char *slash = strchr(component, '/');
+            if (!slash) { i++; goto next; } // not deep enough, skip
+            component = slash + 1;
+        }
+
+        {
+            const char *slash = strchr(component, '/');
+
+            if (!slash) {
+                // This is a file directly at this depth level
+                TreeEntry *e = &tree.entries[tree.count++];
+                e->mode = entries[i].mode;
+                snprintf(e->name, sizeof(e->name), "%s", component);
+                e->hash = entries[i].hash;
+                i++;
+            } else {
+                // This is a directory component at this depth level
+                size_t dir_len = (size_t)(slash - component);
+                char dir_name[256] = {0};
+                if (dir_len >= sizeof(dir_name)) { i++; continue; }
+                memcpy(dir_name, component, dir_len);
+
+                // Check if we already added this directory entry
+                int already = 0;
+                for (int j = 0; j < tree.count; j++) {
+                    if (strcmp(tree.entries[j].name, dir_name) == 0) {
+                        already = 1;
+                        break;
+                    }
+                }
+                if (already) { i++; continue; }
+
+                // Recursively build the subtree one level deeper
+                ObjectID sub_id;
+                if (write_tree_level(entries, count, depth + 1, &sub_id) == 0) {
+                    TreeEntry *e = &tree.entries[tree.count++];
+                    e->mode = MODE_DIR;
+                    snprintf(e->name, sizeof(e->name), "%s", dir_name);
+                    e->hash = sub_id;
+                }
+                i++;
+            }
+        }
+        next:;
+    }
+
+    // Serialize and store this tree level
+    void *tree_data;
+    size_t tree_len;
+    if (tree_serialize(&tree, &tree_data, &tree_len) != 0) return -1;
+    int ret = object_write(OBJ_TREE, tree_data, tree_len, id_out);
+    free(tree_data);
+    return ret;
+}
+
 int tree_from_index(ObjectID *id_out) {
     // TODO: Implement recursive tree building
     // (See Lab Appendix for logical steps)
