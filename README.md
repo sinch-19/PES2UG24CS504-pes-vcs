@@ -22,11 +22,13 @@
 
 ### Screenshot 1A — `./test_objects` output (all tests passing)
 
-![Phase 1A](screenshots/phase1a.png)
+<img width="1078" height="195" alt="Screenshot 2026-04-18 at 18 34 57" src="https://github.com/user-attachments/assets/e55f57f3-3378-441f-9e04-8926716911af" />
+
 
 ### Screenshot 1B — `find .pes/objects -type f` (sharded directory structure)
 
-![Phase 1B](screenshots/phase1b.png)
+<img width="930" height="115" alt="Screenshot 2026-04-18 at 20 17 04" src="https://github.com/user-attachments/assets/b53e8106-38d1-4d3f-996c-c627c3fb70df" />
+
 
 ---
 
@@ -34,11 +36,13 @@
 
 ### Screenshot 2A — `./test_tree` output (all tests passing)
 
-![Phase 2A](screenshots/phase2a.png)
+<img width="697" height="180" alt="Screenshot 2026-04-18 at 19 10 02" src="https://github.com/user-attachments/assets/6c518eb7-3c28-4e82-866e-11c7af4c8f06" />
+
 
 ### Screenshot 2B — `xxd` of a raw tree object (first 20 lines)
 
-![Phase 2B](screenshots/phase2b.png)
+<img width="1371" height="53" alt="Screenshot 2026-04-18 at 20 20 05" src="https://github.com/user-attachments/assets/39328e8b-af44-490b-8c1e-bf5f26f634dd" />
+
 
 ---
 
@@ -46,11 +50,13 @@
 
 ### Screenshot 3A — `pes init` → `pes add` → `pes status` sequence
 
-![Phase 3A](screenshots/phase3a.png)
+<img width="931" height="716" alt="Screenshot 2026-04-19 at 16 41 01" src="https://github.com/user-attachments/assets/205c7fe7-4ab9-4927-8d54-f01136d03609" />
+
 
 ### Screenshot 3B — `cat .pes/index` (text-format index with entries)
 
-![Phase 3B](screenshots/phase3b.png)
+<img width="1053" height="118" alt="Screenshot 2026-04-19 at 16 41 06" src="https://github.com/user-attachments/assets/925729f7-a5a9-4521-bb76-681aba1b390f" />
+
 
 ---
 
@@ -58,15 +64,18 @@
 
 ### Screenshot 4A — `pes log` output with three commits
 
-![Phase 4A](screenshots/phase4a.png)
+<img width="860" height="464" alt="Screenshot 2026-04-19 at 18 16 19" src="https://github.com/user-attachments/assets/08bb3c5f-c8b6-4a78-861c-f582c01416a8" />
+
 
 ### Screenshot 4B — `find .pes -type f | sort` (object store growth after 3 commits)
 
-![Phase 4B](screenshots/phase4b.png)
+<img width="937" height="380" alt="Screenshot 2026-04-19 at 18 19 13" src="https://github.com/user-attachments/assets/22d4c2d8-28fa-44dd-b2ad-38ad4c5f47a8" />
+
 
 ### Screenshot 4C — `cat .pes/refs/heads/main` and `cat .pes/HEAD`
 
-![Phase 4C](screenshots/phase4c.png)
+<img width="789" height="108" alt="Screenshot 2026-04-19 at 18 19 41" src="https://github.com/user-attachments/assets/a79e7375-7152-4fe9-bd31-c9f100096333" />
+
 
 ---
 
@@ -74,11 +83,13 @@
 
 ### Screenshot — Full integration test (`make test-integration`) — Part 1
 
+<img width="1059" height="751" alt="Screenshot 2026-04-19 at 19 16 47" src="https://github.com/user-attachments/assets/ff4a1f80-9d80-42fb-aefe-b28681358f46" />
 
 
 ### Screenshot — Full integration test (`make test-integration`) — Part 2
 
-![Integration Test Part 2](screenshots/integration2.png)
+<img width="1239" height="728" alt="Screenshot 2026-04-19 at 19 19 05" src="https://github.com/user-attachments/assets/8aa325af-93a7-4b52-8d86-e4cc9cbb5f73" />
+
 
 ---
 
